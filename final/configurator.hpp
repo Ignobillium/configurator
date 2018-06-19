@@ -11,20 +11,24 @@
 
   namespace configurator
   {
+    using namespace layers;
+    using namespace adaptation;
+    using namespace netgraph;
+
     class configurator
     {
-    private:
-      std::vector<configurator::layers::virtual_layer*> OutputLayers;
-      std::vector<configurator::layers::virtual_layer*> InputLayers;
+    protected:
+      std::vector</*configurator::layers::*/ld_core*> OutputLD;
 
-      std::vector<configurator::layers::ld_core*> OutputLD;
+      std::vector</*configurator::layers::*/virtual_layer*> OutputLayers;
+      std::vector</*configurator::layers::*/virtual_layer*> InputLayers;
+
+      std::vector</*configurator::adaptation::*/err_master> ErrMaster;
 
       netgraph Netgraph;
-
-      std::vector<configurator::adaptation::err_master> ErrMaster;
     public:
 
-      ///
+      /// TODO:
       /// Добавить аналог bad_any_cast для отслеживания ошибок связывания
       /// (вряд ли это кому-то будет нужно, но just4fun и практики можно)
       ///
@@ -53,23 +57,23 @@
 
       // [in/out with layer(s)]
       template<typename LType>
-        void bindLayerWithInput(layer_descriptor<LType>& Layer) noexcept;
-
-      template<typename LType>
-        void bindLayersWithInput(layer_descriptor<LType> *Layers, size_t LayersCount) noexcept;
+        void bindLayerWithInput(layer_descriptor<LType>& Layer)  noexcept;
 
       template<typename LType>
         void bindLayerWithOutput(layer_descriptor<LType>& Layer) noexcept;
 
       template<typename LType>
-      void bindLayersWithOutput(layer_descriptor<LType> *Layers, size_t LayersCount) noexcept;
+        void bindLayersWithOutput(layer_descriptor<LType> *Layers, size_t LayersCount) noexcept;
+
+      template<typename LType>
+        void bindLayersWithInput(layer_descriptor<LType> *Layers, size_t LayersCount)  noexcept;
       // end [in/out with layer(s)]
 
-      ///
+      /// TODO:
       /// Запилить ещё bind'ы через итераторы
       ///
 
-      ///
+      /// TODO:
       /// Также в будущем добавить возможность связывать конфигураторы
       ///
 
@@ -78,22 +82,27 @@
         void regInput(layer_descriptor<LType>& Layer) noexcept;
 
       template<typename LType>
-        void regInput(layer_descriptor<LType> *Layer, size_t LayersCount) noexcept;
+        void regOutput(layer_descriptor<LType>& Layer) noexcept;
 
       template<typename LType>
-        void regOutput(layer_descriptor<LType>& Layer) noexcept;
+        void regInput(layer_descriptor<LType> *Layer, size_t LayersCount)  noexcept;
 
       template<typename LType>
         void regOutput(layer_descriptor<LType> *Layer, size_t LayersCount) noexcept;
       // end [assigning (in/out)put layers]
 
+      /// TODO:
+      /// reg'ы также запилить через итераторы
+      ///
+
       // [core functionality]
         void fillInput(const boost::numeric::ublas::vector<double>* InputData) noexcept;
+        /// TODO: getOutput(...) const noexcept;
 
         void computeIteration() noexcept;
         void teachIteration()   noexcept;
 
-        void teach(bool ExitCondition) noexcept;
+        void teach(bool ExitCondition)    noexcept;
         void teach(size_t IterationSount) noexcept;
 
         void work (size_t IterationSount) noexcept;
@@ -114,7 +123,7 @@
 
     private:
       netgraph& fillGenerations() noexcept;
-      size_t cnsGenerationsId() noexcept; // cns == Calculate and Set; возвращает число поколений
+      size_t   cnsGenerationsId() noexcept; // cns == Calculate and Set; возвращает число поколений
     };
   }
 
